@@ -5,12 +5,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: action/checkout@v1
+      - uses: actions/checkout@v1
         with:
          fetch-depth: 0
 
       - name: Setup Python 3.11
-        uses: action/setup-python@v1
+        uses: actions/setup-python@v1
         with:
          python-version: 3.11
 
