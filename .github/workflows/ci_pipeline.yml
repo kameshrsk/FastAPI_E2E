@@ -1,42 +1,44 @@
-ci_pipeline:
-on: push
-runs-on: ubuntu-latest
+name: ci_pipeline
+'on': push
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
 
-  steps:
-    - uses: actions/checkout@v1
-      with:
-        fetch-depth: 0
+    steps:
+      - uses: action/checkout@v1
+        with:
+         fetch-depth: 0
 
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v1
-      with:
-        python-version: 3.11
+      - name: Setup Python 3.11
+        uses: action/setup-python@v1
+        with:
+         python-version: 3.11
 
-    - name: Install Dependencies
-      run: |
-        python -m pip install --upgrade pip
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install Dependencies
+        run: |
+         python -m pip install --upgrade pip
+         if[ -f requirements.txt]; then pip install -r requirements.txt; fi
+      
+      - name: Format
+        run: |
+         black api.py
 
-    - name: Format
-      run: |
-        black api.py
+      - name: Lint
+        run: |
+         pylint --disable=R,C api.py
 
-    - name: Lint
-      run: |
-        pylint --disable=R,C api.py
+      - name: Accuracy Check
+        run: |
+         python accuracy.py
 
-    - name: Accuracy Check
-      run: |
-        python accuracy.py
-
-    - name: Good For Deployment?
-      run: |
-        accuracy=$(cat accuracy.txt)
-        threshold=0.92
-        if (( $(echo "$accuracy < $threshold" | bc -l) ))
-        then
-          echo "The Model is not Performing well. It achieves an accuracy of $accuracy % which is less than the threshold"
-          exit 1
-        else
-          echo "The Model achieves an accuracy of $accuracy % which is good enough for deployment"
-        fi
+      - name: Threshold Satisfaction
+        run: |
+         accuracy=$(cat accuracy.txt)
+         threshold=0.92
+         if (( $(echo "$accuracy < $threshold" | bc -l) ))
+         then
+           echo "The Model is not Performing well. It achieves an accuracy of $accuracy % which is less than the threshold"
+           exit 1
+         else
+           echo "The Model achives as accuracy of $accuracy % which is good enough for deploymnet"
+         fi
