@@ -46,7 +46,7 @@ jobs:
            echo "The Model achives as accuracy of $accuracy % which is good enough for deploymnet"
          fi
   cd_pipeline:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: ci_pipeline
 
     steps:
