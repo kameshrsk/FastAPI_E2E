@@ -35,7 +35,12 @@
             var curtosis = document.getElementById('curtosis').value;
             var entropy = document.getElementById('entropy').value;
 
-            fetch('http://127.0.0.1:8000/predict', {
+            // Get the current URL and extract the hostname (IP) and port
+            var url = new URL(window.location.href);
+            var ip = url.hostname;
+            var port = url.port;
+
+            fetch('http://' + ip + ':' + port + '/predict', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
